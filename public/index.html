@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EcoSync | E-Waste Management</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+</head>
+<body>
+    <nav>
+        <a href="index.html" class="logo"><i class="ri-recycle-fill"></i> Eco<span>Sync</span></a>
+    </nav>
+
+    <div class="container" style="display: flex; align-items: center; min-height: calc(100vh - 80px);">
+        <div class="grid-2" style="width: 100%;">
+            <div class="hero-text" style="display: flex; flex-direction: column; justify-content: center;">
+                <h1 style="font-size: 3.5rem; line-height: 1.1;">Recycle E-Waste.<br><span class="text-gradient">Save the Planet.</span></h1>
+                <p class="mt-2" style="font-size: 1.1rem; max-width: 80%;">Join our company initiative to responsibly dispose of electronic waste. Track your impact, reduce CO2 emissions, and earn rewards for a greener future.</p>
+                <div class="mt-2" style="display: flex; gap: 1rem;">
+                    <a href="#auth-section" class="btn btn-primary">Get Started</a>
+                </div>
+            </div>
+
+            <div class="glass-card" id="auth-section">
+                <div class="tabs" style="display: flex; gap: 1rem; margin-bottom: 2rem;">
+                    <button class="btn btn-secondary tab-btn active" id="tab-login" style="flex:1;">Login</button>
+                    <button class="btn btn-secondary tab-btn" id="tab-register" style="flex:1;">Register</button>
+                </div>
+
+                <!-- Login Form -->
+                <form id="login-form">
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input type="email" id="login-email" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Password</label>
+                        <input type="password" id="login-password" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary" style="width: 100%;">Login</button>
+                    <p id="login-msg" class="mt-2 text-center" style="color: #ef4444;"></p>
+                </form>
+
+                <!-- Register Form -->
+                <form id="register-form" class="hidden">
+                    <div class="form-group">
+                        <label>Full Name</label>
+                        <input type="text" id="reg-name" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input type="email" id="reg-email" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Password</label>
+                        <input type="password" id="reg-password" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Role</label>
+                        <select id="reg-role">
+                            <option value="user">User</option>
+                            <option value="admin">Admin</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary" style="width: 100%;">Create Account</button>
+                    <p id="reg-msg" class="mt-2 text-center" style="color: #ef4444;"></p>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/app.js"></script>
+    <script>
+        // Auth UI logic
+        const tabLogin = document.getElementById('tab-login');
+        const tabRegister = document.getElementById('tab-register');
+        const loginFormEl = document.getElementById('login-form');
+        const registerFormEl = document.getElementById('register-form');
+
+        tabLogin.addEventListener('click', () => {
+            tabLogin.classList.add('active');
+            tabLogin.style.background = 'rgba(255, 255, 255, 0.05)';
+            tabRegister.style.background = 'transparent';
+            loginFormEl.classList.remove('hidden');
+            registerFormEl.classList.add('hidden');
+        });
+
+        tabRegister.addEventListener('click', () => {
+            tabRegister.classList.add('active');
+            tabRegister.style.background = 'rgba(255, 255, 255, 0.05)';
+            tabLogin.style.background = 'transparent';
+            registerFormEl.classList.remove('hidden');
+            loginFormEl.classList.add('hidden');
+        });
+    </script>
+</body>
+</html>

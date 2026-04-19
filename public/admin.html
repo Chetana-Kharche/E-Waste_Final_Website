@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin | EcoSync</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .sidebar {
+            width: 250px;
+            background: rgba(15, 23, 42, 0.8);
+            border-right: 1px solid var(--border);
+            height: calc(100vh - 70px);
+            padding: 2rem 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            position: fixed;
+            left: 0;
+            top: 70px;
+        }
+        .nav-item {
+            padding: 1rem;
+            border-radius: 0.5rem;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        .nav-item:hover, .nav-item.active {
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--primary);
+        }
+        .main-content {
+            margin-left: 250px;
+            padding: 2rem;
+            width: calc(100% - 250px);
+            min-height: calc(100vh - 70px);
+        }
+        nav { height: 70px; position: fixed; top: 0; width: 100%; z-index: 50; }
+        .tab-section { display: none; }
+        .tab-section.active { display: block; animation: fadeIn 0.3s; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body style="padding-top: 70px;">
+    <nav>
+        <a href="#" class="logo"><i class="ri-recycle-fill"></i> Eco<span>Sync</span> <span style="font-size: 0.8rem; background: var(--primary); padding: 0.2rem 0.5rem; border-radius: 4px; color: white; margin-left: 0.5rem;">ADMIN</span></a>
+        <div style="display: flex; gap: 1rem; align-items: center;">
+            <button id="run-scraper-btn" class="btn btn-primary" style="padding: 0.5rem 1rem; font-size: 0.8rem;"><i class="ri-search-line"></i> Sync Directories</button>
+            <button id="logout-btn" class="btn btn-secondary" style="padding: 0.5rem 1rem;">Logout</button>
+        </div>
+    </nav>
+
+    <div class="sidebar">
+        <div class="nav-item active" data-target="tab-overview"><i class="ri-dashboard-line"></i> Overview Reports</div>
+        <div class="nav-item" data-target="tab-pickups"><i class="ri-truck-line"></i> Manage Pickups</div>
+        <div class="nav-item" data-target="tab-users"><i class="ri-group-line"></i> User Management</div>
+    </div>
+
+    <div class="main-content">
+        <!-- Overview Reports -->
+        <div id="tab-overview" class="tab-section active">
+            <h2 class="mb-2">System <span class="text-gradient">Overview</span></h2>
+            <div class="grid-2 mb-2">
+                <div class="stat-card" style="background: rgba(16, 185, 129, 0.1); border-color: rgba(16, 185, 129, 0.3);">
+                    <i class="ri-weight-line text-gradient" style="font-size: 2rem;"></i>
+                    <div class="stat-value" id="admin-total-kg">0</div>
+                    <div class="stat-label">Total Kg Collected</div>
+                </div>
+                <div class="stat-card" style="background: rgba(59, 130, 246, 0.1); border-color: rgba(59, 130, 246, 0.3);">
+                    <i class="ri-leaf-fill text-gradient" style="font-size: 2rem;"></i>
+                    <div class="stat-value" id="admin-total-co2">0</div>
+                    <div class="stat-label">Total Kg CO2 Saved</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pickups -->
+        <div id="tab-pickups" class="tab-section">
+            <h2 class="mb-2">Pickup <span class="text-gradient">Requests</span></h2>
+            <div class="glass-card">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>User / Contact</th>
+                            <th>Pickup Details</th>
+                            <th>Type / Weight</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="admin-table-body"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Users -->
+        <div id="tab-users" class="tab-section">
+            <h2 class="mb-2">User <span class="text-gradient">Management</span></h2>
+            <div class="glass-card">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>User Name</th>
+                            <th>Contact</th>
+                            <th>Total Kg</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="admin-users-body"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modals -->
+    <div id="photo-modal" class="hidden" style="position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 100; display: flex; justify-content: center; align-items: center;">
+        <div class="glass-card" style="position: relative; max-width: 80vw; max-height: 80vh;">
+            <button id="close-modal" style="position: absolute; top: 1rem; right: 1rem; background: transparent; border: none; color: white; font-size: 1.5rem; cursor: pointer;"><i class="ri-close-line"></i></button>
+            <img id="modal-img" src="" alt="Waste Photo" style="max-width: 100%; max-height: 70vh; border-radius: 0.5rem;">
+        </div>
+    </div>
+
+    <script src="js/app.js"></script>
+    <script>
+        const user = JSON.parse(localStorage.getItem('user'));
+        if (!user || user.role !== 'admin') window.location.href = 'index.html';
+
+        // Tab Switching
+        document.querySelectorAll('.nav-item').forEach(item => {
+            item.addEventListener('click', () => {
+                document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+                document.querySelectorAll('.tab-section').forEach(t => t.classList.remove('active'));
+                item.classList.add('active');
+                document.getElementById(item.getAttribute('data-target')).classList.add('active');
+            });
+        });
+
+        const modal = document.getElementById('photo-modal');
+        const modalImg = document.getElementById('modal-img');
+        document.getElementById('close-modal').addEventListener('click', () => modal.classList.add('hidden'));
+
+        window.openPhoto = function(url) {
+            modalImg.src = url;
+            modal.classList.remove('hidden');
+        }
+    </script>
+</body>
+</html>
